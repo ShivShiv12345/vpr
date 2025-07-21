@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Payment Portal</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header-card">
+            <div class="header-content">
+                <h1 class="main-title">
+                    <i class="fas fa--sign"></i>
+                    Vendor Payment Portal
+                </h1>
+                <p class="subtitle">Early Payment Request System</p>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="search-card">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-search"></i>
+                    Invoice Search
+                </h2>
+            </div>
+            <div class="card-content">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="vendor-id">
+                            Vendor ID
+                            <i class="fas fa-question-circle tooltip-icon" data-tooltip="Enter your unique vendor identification number to search for invoices"></i>
+                        </label>
+                        <div class="input-with-button">
+                            <input type="text" id="vendor-id" placeholder="Enter vendor ID (e.g., VEND001)" class="form-input">
+                            <button id="search-icon-btn" class="search-icon-btn" disabled>
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="search-option">
+                            Search Option
+                            <i class="fas fa-question-circle tooltip-icon" data-tooltip="Choose between processing all invoices or selecting specific ones"></i>
+                        </label>
+                        <select id="search-option" class="form-select">
+                            <option value="">Select option</option>
+                            <option value="full" data-tooltip="Process all invoices for early payment">Full Turnover</option>
+                            <option value="requested" data-tooltip="Select specific invoices and choose payment date">Requested by Vendor</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="vendor-info" class="vendor-info hidden">
+                    <p>Vendor: <strong id="vendor-name-display"></strong></p>
+                </div>
+
+                <div id="full-turnover-info" class="info-popup hidden">
+                    <div class="info-content">
+                        <h4><i class="fas fa-info-circle"></i> Full Turnover Information</h4>
+                        <p>With Full Turnover option:</p>
+                        <ul>
+                            <li>✅ All your invoices will be processed for early payment</li>
+                            <li>💰 You'll receive payment on the same day or next business day</li>
+                            <li>📊 Discount calculated based on current date vs due date</li>
+                            <!-- <li>⚡ Fast processing - no individual selection needed</li> -->
+                            <li>🎯 Payment date is automatically optimized for best terms</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div id="requested-vendor-info" class="info-popup hidden">
+                    <div class="info-content">
+                        <h4><i class="fas fa-calendar-alt"></i> Requested by Vendor Information</h4>
+                        <p>With Requested by Vendor option:</p>
+                        <ul>
+                            <li>📋 Select specific invoices you want to process</li>
+                            <li>📅 Choose your preferred payment date</li>
+                            <li>💡 Discount calculated based on payment date vs due date</li>
+                            <li>🎯 Only dates between today and earliest due date are available</li>
+                            <!-- <li>⚠️ Payment date must be before all selected invoice due dates</li> -->
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Search button removed as requested -->
+            </div>
+        </div>
+
+       
+        <!-- Results Section -->
+        <div id="results-section" class="results-card hidden">
+            <div class="card-header">
+                <h2 class="card-title">
+                    <i class="fas fa-file-text"></i>
+                    Invoice Results (<span id="invoice-count">0</span> found)
+                </h2>
+            </div>
+            <div class="card-content">
+                <div id="select-notice" class="select-notice hidden">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Select invoices for early payment request:
+                </div>
+
+                <div class="table-container">
+                    <table id="invoices-table" class="data-table">
+                        <thead>
+                            <tr id="table-header">
+                                <!-- Headers will be dynamically generated -->
+                            </tr>
+                        </thead>
+                        <tbody id="table-body">
+                            <!-- Rows will be dynamically generated -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Payment Date Selection -->
+                <div class="payment-section">
+                    <div id="full-payment-message" class="success-notice hidden">
+                        <i class="fas fa-check-circle"></i>
+                        <p><strong>Full Turnover Selected:</strong> You will receive payment early for all invoices. Payment will be processed automatically based on optimal timing.</p>
+                    </div>
+                    
+                    <div id="payment-date-section" class="hidden">
+                        <label for="payment-date">
+                            Preferred Payment Date
+                            <i class="fas fa-question-circle tooltip-icon" data-tooltip="Select when you want to receive payment. Date must be between today and the earliest due date of selected invoices"></i>
+                        </label>
+                        <input type="date" id="payment-date" class="form-input" min="">
+                        <p class="date-help-text">Available dates are limited based on your invoice due dates</p>
+                    </div>
+                    
+                    <button id="preview-btn" class="btn btn-secondary btn-full" disabled>
+                        <i class="fas fa-calculator"></i>
+                        <span id="preview-text">Calculate Early Payment Benefits</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+       
+    </div>
+
+    <!-- Preview Modal -->
+    <div id="preview-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-exclamation-circle"></i>
+                    Payment Preview
+                </h2>
+                <button id="close-modal" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="summary-cards">
+                    <div class="summary-card">
+                        <div class="summary-label">Original Amount</div>
+                        <div class="summary-value" id="original-amount">$0</div>
+                    </div>
+                    <div class="summary-card discount">
+                        <div class="summary-label">Total Discount</div>
+                        <div class="summary-value" id="discount-amount">$0</div>
+                    </div>
+                    <div class="summary-card payment">
+                        <div class="summary-label">Payment Amount</div>
+                        <div class="summary-value" id="payment-amount">$0</div>
+                    </div>
+                </div>
+
+                <div class="success-message">
+                    <i class="fas fa-check-circle"></i>
+                    <p>
+                        🎉 Based on the due dates of your invoices, you are eligible for a total discount of 
+                        <strong id="discount-highlight">$0</strong>
+                    </p>
+                    <p class="payment-date-info">Payment Date: <span id="selected-payment-date"></span></p>
+                </div>
+
+                <div class="preview-table-container">
+                    <table id="preview-table" class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Invoice #</th>
+                                <th>Original Amount</th>
+                                <th>Days to Due</th>
+                                <th>Discount %</th>
+                                <th>Discount Amount</th>
+                                <th>Payment Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="preview-table-body">
+                            <!-- Preview data will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel-btn" class="btn btn-outline">Cancel</button>
+                <button id="confirm-btn" class="btn btn-success">
+                    <i class="fas fa-check-circle"></i>
+                    Confirm & Submit
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-check-circle"></i>
+                    Success!
+                </h2>
+            </div>
+            <div class="modal-body">
+                <div class="success-message">
+                    <i class="fas fa-party-horn"></i>
+                    <p><strong>You have successfully submitted early payment request against your invoices</strong></p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="success-ok-btn" class="btn btn-primary">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Due Date Warning Modal -->
+    <div id="due-date-warning-modal" class="modal hidden">
+        <div class="modal-content warning-modal">
+            <div class="modal-header">
+                <h2>
+                    <i class="fas fa-exclamation-triangle warning-icon"></i>
+                    Payment Date Conflict - Request Cannot Be Processed
+                </h2>
+                <button id="close-warning-modal" class="close-btn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-message">
+                    <h4>🚫 Request Cannot Be Submitted</h4>
+                    <p>Your selected payment date is <strong>after some invoice due dates</strong>. This violates early payment terms.</p>
+                    
+                    <div id="conflict-details" class="conflict-section">
+                        <!-- Conflict details will be populated here -->
+                    </div>
+                    
+                    <div class="recommendation">
+                        <h5>💡 What you need to do:</h5>
+                        <ul>
+                            <li>Choose an earlier payment date (before all due dates)</li>
+                            <li>Or deselect invoices with early due dates</li>
+                            <li>Early payment discount only applies when payment is before due date</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="warning-cancel-btn" class="btn btn-outline">Cancel & Review</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tooltip Container -->
+    <div id="tooltip" class="tooltip hidden">
+        <div class="tooltip-content"></div>
+        <div class="tooltip-arrow"></div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
