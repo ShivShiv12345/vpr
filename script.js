@@ -1,8 +1,8 @@
 
 const AIRTABLE_CONFIG = {
-    BASE_ID: 'appVMSlbsgAx0cH8v', // Replace with your Airtable Base ID
+    BASE_ID: 'appkUal6c4oanOR4X', // Replace with your Airtable Base ID
     TABLE_NAME: 'AP CRM', // Your table name
-    API_KEY: 'patkafVHW8kIY2H8t.8d9cf3705f850e5eb13dfa9f4ef1fb532588765ccdf4d35a6218461b22aba7a6', // Replace with your Airtable API key
+    API_KEY: 'patcpUIfwD7dO31yP.d4f977687c0a13f9ababa4f5c96954c68bd07d09a9e3eb6a1391acb7f2f2375b', // Replace with your Airtable API key
 };
 
 
