@@ -1,0 +1,2984 @@
+{
+  "name": "ERP Workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -1380,
+        940
+      ],
+      "id": "756b4a28-a3d6-4279-97b9-5d135a72bf48",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "operation": "getTimeBetweenDates",
+        "startDate": "={{ $json['Invoice Date'] }}",
+        "endDate": "={{ $json['Due Date'] }}",
+        "outputFieldName": "daysDifference",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -470,
+        -60
+      ],
+      "id": "c03ea547-7c16-430f-a659-a8c98417b4cd",
+      "name": "Date & Time"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.daysDifference.days }}",
+                    "rightValue": 90,
+                    "operator": {
+                      "type": "number",
+                      "operation": "gt"
+                    },
+                    "id": "1a181824-680c-4095-bc2a-06abe0781d6c"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "afe6eb7b-0379-422e-a0dc-d359c07c4c4e",
+                    "leftValue": "={{ $json.daysDifference.days }}",
+                    "rightValue": 91,
+                    "operator": {
+                      "type": "number",
+                      "operation": "lt"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        -160,
+        -60
+      ],
+      "id": "7fa19eae-b98c-4c10-a0a2-595421884e95",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRecord",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblm8tIVsuSzPOZk0",
+          "mode": "list",
+          "cachedResultName": "AR Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblm8tIVsuSzPOZk0"
+        },
+        "id": "={{ $('Get a record AR').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1000,
+        -460
+      ],
+      "id": "e071b746-4f32-4f2a-a9c1-b6ed1222667c",
+      "name": "Delete a record from AR",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblgy7JQmZ7xbTm7i",
+          "mode": "list",
+          "cachedResultName": "AR CRM",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblgy7JQmZ7xbTm7i"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Batch ID": "={{ $('Get a record AR').item.json['Batch ID'] }}",
+            "Customer Name": "={{ $('Get a record AR').item.json['Customer Name'] }}",
+            "Customer Email": "={{ $('Get a record AR').item.json['Customer Email'] }}",
+            "Invoice Number": "={{ $('Get a record AR').item.json['Invoice Number'] }}",
+            "Invoice Date": "={{ $('Get a record AR').item.json['Invoice Date'] }}",
+            "Invoice Amount": "={{ $('Get a record AR').item.json['Invoice Amount'] }}",
+            "Due Date": "={{ $('Get a record AR').item.json['Due Date'] }}",
+            "Aging Factor": "={{ $json.output }}",
+            "Eligibility Status": "Eligible"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Batch ID",
+              "displayName": "Batch ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Customer Email",
+              "displayName": "Customer Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice Number",
+              "displayName": "Invoice Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice Date",
+              "displayName": "Invoice Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice Amount",
+              "displayName": "Invoice Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Eligibility Status",
+              "displayName": "Eligibility Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Eligible",
+                  "value": "Eligible"
+                },
+                {
+                  "name": "Not Eligible",
+                  "value": "Not Eligible"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Aging Factor",
+              "displayName": "Aging Factor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Credit Factor",
+              "displayName": "Credit Factor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1.0",
+                  "value": "1.0"
+                },
+                {
+                  "name": "0.95",
+                  "value": "0.95"
+                },
+                {
+                  "name": "0.85",
+                  "value": "0.85"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sector Factor",
+              "displayName": "Sector Factor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "0.95",
+                  "value": "0.95"
+                },
+                {
+                  "name": "0.85",
+                  "value": "0.85"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Dispute Factor",
+              "displayName": "Dispute Factor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "0.95",
+                  "value": "0.95"
+                },
+                {
+                  "name": "0.85",
+                  "value": "0.85"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Loan Amount",
+              "displayName": "Loan Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        680,
+        -360
+      ],
+      "id": "f57c8517-645a-4703-8a4c-59fe5f4d476f",
+      "name": "Create AR CRM for Eligible Invoices",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "=channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0973EW3532",
+          "mode": "list",
+          "cachedResultName": "ar-crm-team"
+        },
+        "user": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "text": "=A new Accounts Receivable file has been added to the system.\nPlease review and take necessary action. (Credit Rating, Sector Factor, Dispute Factor) give the rating before 24-48 hrs.\n\nTotal Number of invoices eligible : {{ $json.recordCount }} ",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1240,
+        -260
+      ],
+      "id": "1a67866a-d1ce-4759-9c41-b51a5aa81f72",
+      "name": "Send a message to AR Team",
+      "webhookId": "6064d61b-f7e9-426e-a730-c38eab8703f0",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "Sx45AYuBQdfPAmyn",
+          "name": "Slack account 74"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst updatedItems = items.map((item) => \n  \n  {\n  const daysDifference = item?.json?.daysDifference?.days;\n  let output;\n  if (daysDifference <= 30) {\n    output = 1.0;\n  } else if (daysDifference <= 60) {\n    output = 0.9;\n  } else if (daysDifference <= 90) {\n    output = 0.8;\n  }\n  return { output };\n});\nreturn updatedItems;\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        360,
+        -360
+      ],
+      "id": "d08ff032-c6be-4af9-a205-951b7a9ebd4f",
+      "name": "Calculate Aging Factor"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblm8tIVsuSzPOZk0",
+          "mode": "list",
+          "cachedResultName": "AR Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblm8tIVsuSzPOZk0"
+        },
+        "options": {},
+        "sort": {
+          "property": [
+            {
+              "field": "Invoice Number"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -980,
+        -60
+      ],
+      "id": "42cbbc3b-501d-4e31-b5ab-3af9413b5652",
+      "name": "Search AR Workspace",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblm8tIVsuSzPOZk0",
+          "mode": "list",
+          "cachedResultName": "AR Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblm8tIVsuSzPOZk0"
+        },
+        "id": "={{ $('Get a record AR').item.json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        500,
+        -920
+      ],
+      "id": "b2765e8b-f4e1-4e92-9ff8-9dfe8d7fdb26",
+      "name": "Search not eligible invoices",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteRecord",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblm8tIVsuSzPOZk0",
+          "mode": "list",
+          "cachedResultName": "AR Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblm8tIVsuSzPOZk0"
+        },
+        "id": "={{ $('Search not eligible invoices').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        -820
+      ],
+      "id": "98b368ee-6bed-48c4-9074-ec666e1d35c1",
+      "name": "Delete a record from AR Workspace",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.fields.Vendor_Email }}",
+        "subject": "You Are Eligible for Early Payment– Next Steps ",
+        "emailType": "text",
+        "message": "=Dear {{ $json.fields.Vendor_Name }},\n\nVendor ID : {{ $json.fields.Vendor_ID }}\nInvoice Number : {{ $json.fields.Invoice_Number }}\n\nWe are pleased to inform you that you are eligible for early payment (Full Turnover/Request by Vendor) based on your recent transaction history and account status.\n\nIf you would like to take advantage of this option, Kindly Fill the form https:https://shivshiv12345.github.io/vpr/\n\nOur team will get back to you through the process.\n\nThank you for your continued partnership.\n\nBest regards,\nPrashant\nERP Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1020,
+        1820
+      ],
+      "id": "dae8f982-24a0-492d-9822-f602179be3ae",
+      "name": "Eligible email to Customer1",
+      "webhookId": "6d4f7cc0-af13-4dfe-ad0f-6bddfe46ea30",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IBAD1ixcBKg7uTsN",
+          "name": "Gmail account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblrCKMsIqIZvMYyr",
+          "mode": "list",
+          "cachedResultName": "AP Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblrCKMsIqIZvMYyr"
+        },
+        "options": {},
+        "sort": {
+          "property": [
+            {
+              "field": "Invoice Number"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -660,
+        1420
+      ],
+      "id": "62a06734-0020-46a5-b599-0368304822a4",
+      "name": "Search AP Workspace",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblrCKMsIqIZvMYyr",
+          "mode": "list",
+          "cachedResultName": "AP Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblrCKMsIqIZvMYyr"
+        },
+        "id": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -420,
+        1440
+      ],
+      "id": "7da5d877-8c58-483a-b85f-38a6b24708ff",
+      "name": "Get a record AP",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblm8tIVsuSzPOZk0",
+          "mode": "list",
+          "cachedResultName": "AR Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblm8tIVsuSzPOZk0"
+        },
+        "id": "={{ $json.id }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -760,
+        -60
+      ],
+      "id": "6969a893-9a99-4477-ac63-889d0448e748",
+      "name": "Get a record AR",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblv3v7tkSxQxSPu9",
+          "mode": "list",
+          "cachedResultName": "AP CRM",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblv3v7tkSxQxSPu9"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Invoice_Number": "={{ $('Get a record AP').item.json['Invoice Number'] }}",
+            "Invoice_Amount": "={{ $('Get a record AP').item.json['Invoice Amount'] }}",
+            "Batch_ID": "={{ $('Get a record AP').item.json['Batch ID'] }}",
+            "Vendor_ID": "={{ $('Get a record AP').item.json['Vendor ID'] }}",
+            "Vendor_Name": "={{ $('Get a record AP').item.json['Vendor Name'] }}",
+            "Vendor_Email": "={{ $('Get a record AP').item.json['Vendor Email'] }}",
+            "Invoice_Date": "={{ $('Get a record AP').item.json['Invoice Date'] }}",
+            "Due_Date": "={{ $('Get a record AP').item.json['Due Date'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Batch_ID",
+              "displayName": "Batch_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_ID",
+              "displayName": "Vendor_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_Name",
+              "displayName": "Vendor_Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_Email",
+              "displayName": "Vendor_Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Number",
+              "displayName": "Invoice_Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Date",
+              "displayName": "Invoice_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Amount",
+              "displayName": "Invoice_Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Due_Date",
+              "displayName": "Due_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Payment_Option",
+              "displayName": "Payment_Option",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Full turnover",
+                  "value": "Full turnover"
+                },
+                {
+                  "name": "Selected by date",
+                  "value": "Selected by date"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Payment_Date",
+              "displayName": "Payment_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Payment_Amount",
+              "displayName": "Payment_Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        20,
+        1440
+      ],
+      "id": "864e8525-fa6e-4b57-a417-76ea6d3c9193",
+      "name": "Create AP CRM for Eligible Invoices",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteRecord",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblrCKMsIqIZvMYyr",
+          "mode": "list",
+          "cachedResultName": "AP Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblrCKMsIqIZvMYyr"
+        },
+        "id": "={{ $('Get a record AP').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1020,
+        1380
+      ],
+      "id": "45656a95-8d86-4477-b964-add8ea94dd40",
+      "name": "Delete a record from AP",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst recordCount = items.length;\n\nreturn { recordCount };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        1600
+      ],
+      "id": "2c55cf08-7ff3-4f6e-917b-ba8b79ed7f79",
+      "name": "Check How Much Invoices Eligible"
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst recordCount = items.length;\n\nreturn { recordCount };\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1020,
+        -260
+      ],
+      "id": "18eb3aa6-4616-488b-aa4a-a5a68c34c437",
+      "name": "Calculate How Much Invoices Eligible"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "=channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C096FT9GZ3N",
+          "mode": "list",
+          "cachedResultName": "ap-crm-team"
+        },
+        "user": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "text": "=A new Accounts Payable file has been added to the system.\nPlease review and take necessary action.\n\nTotal Number of invoices eligible : {{ $json.recordCount }} ",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        1240,
+        1600
+      ],
+      "id": "98cabd68-5623-48ca-92e5-9a8c94cd3db9",
+      "name": "Send a message to AP Team1",
+      "webhookId": "6064d61b-f7e9-426e-a730-c38eab8703f0",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "Sx45AYuBQdfPAmyn",
+          "name": "Slack account 74"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblgy7JQmZ7xbTm7i",
+          "mode": "list",
+          "cachedResultName": "AR CRM",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblgy7JQmZ7xbTm7i"
+        },
+        "options": {},
+        "sort": {
+          "property": [
+            {
+              "field": "Batch ID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        360,
+        360
+      ],
+      "id": "4ce82bff-2eea-48fb-b48f-388ef9322b76",
+      "name": "Search Updated Records",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf604312-e3aa-406c-82e7-99a9c7b7d7b2",
+              "leftValue": "={{ $json['Credit Factor'] }}",
+              "rightValue": "Disbursed",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "552269d3-6837-4690-a6ba-9a8e16989075",
+              "leftValue": "={{ $json['Sector Factor'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "0edc4866-5b96-4a1c-a585-d3012b52e856",
+              "leftValue": "={{ $json['Dispute Factor'] }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        580,
+        220
+      ],
+      "id": "6e14c93d-18a2-4ce7-b496-68c93fda48ef",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "search",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbloNYgHevCbijGB7",
+          "mode": "list",
+          "cachedResultName": "AP CRM",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tbloNYgHevCbijGB7"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -680,
+        2180
+      ],
+      "id": "766a4173-50dc-41c0-b079-67a7cd73ef85",
+      "name": "Create AP CRM for Eligible Invoices1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf604312-e3aa-406c-82e7-99a9c7b7d7b2",
+              "leftValue": "={{ $json.Payment_Status }}",
+              "rightValue": "Payment Disbursed",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        -400,
+        2180
+      ],
+      "id": "b15678b6-f46e-4a25-b715-3025c9f6dd6f",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblkmMezPERKkJJRF",
+          "mode": "list",
+          "cachedResultName": "AP Paid Invoices",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblkmMezPERKkJJRF"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Batch_ID": "={{ $json.Batch_ID }}",
+            "Vendor_ID": "={{ $json.Vendor_ID }}",
+            "Vendor_Name": "={{ $json.Vendor_Name }}",
+            "Vendor_Email": "={{ $json.Vendor_Email }}",
+            "Invoice_Number": "={{ $json.Invoice_Number }}",
+            "Invoice_Date": "={{ $json.Invoice_Date }}",
+            "Invoice_Amount": "={{ $json.Invoice_Amount }}",
+            "Due_Date": "={{ $json.Due_Date }}",
+            "Payment_Option": "={{ $json.Payment_Option }}",
+            "Payment_Date": "={{ $json.Payment_Date }}",
+            "Payment_Amount": "={{ $json.Payment_Amount }}",
+            "Transaction_ID": "={{ $json.Transaction_ID }}",
+            "Payment_Status": "={{ $json.Payment_Status }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Batch_ID",
+              "displayName": "Batch_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_ID",
+              "displayName": "Vendor_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_Name",
+              "displayName": "Vendor_Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_Email",
+              "displayName": "Vendor_Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Number",
+              "displayName": "Invoice_Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Date",
+              "displayName": "Invoice_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Amount",
+              "displayName": "Invoice_Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Due_Date",
+              "displayName": "Due_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Payment_Option",
+              "displayName": "Payment_Option",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Full turnover ",
+                  "value": "Full turnover "
+                },
+                {
+                  "name": "Selected by date",
+                  "value": "Selected by date"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Payment_Date",
+              "displayName": "Payment_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Payment_Amount",
+              "displayName": "Payment_Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Transaction_ID",
+              "displayName": "Transaction_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Payment_Status",
+              "displayName": "Payment_Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Pending (Waiting for vendor request)",
+                  "value": "Pending (Waiting for vendor request)"
+                },
+                {
+                  "name": "In Progress",
+                  "value": "In Progress"
+                },
+                {
+                  "name": "Payment Disbursed",
+                  "value": "Payment Disbursed"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -120,
+        2160
+      ],
+      "id": "5b92a8aa-1800-433c-b73f-2078b3ba9713",
+      "name": "Create a record1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "This node is executed when invoice has due date - invoice date difference is greater than 90 days",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -240,
+        -200
+      ],
+      "typeVersion": 1,
+      "id": "dd3be269-4ed4-4fd5-883d-c662db988b9e",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblOYUZZb3SQ6oLH2",
+          "mode": "list",
+          "cachedResultName": "AR Rejected Profiles",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblOYUZZb3SQ6oLH2"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Batch ID": "={{ $json['Batch ID'] }}",
+            "Customer Name": "={{ $json['Customer Name'] }}",
+            "Customer Email": "={{ $json['Customer Email'] }}",
+            "Invoice Number": "={{ $json['Invoice Number'] }}",
+            "Invoice Date": "={{ $json['Invoice Date'] }}",
+            "Invoice Amount": "={{ $json['Invoice Amount'] }}",
+            "Due Date": "={{ $json['Due Date'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Batch ID",
+              "displayName": "Batch ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Customer Email",
+              "displayName": "Customer Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice Number",
+              "displayName": "Invoice Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice Date",
+              "displayName": "Invoice Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice Amount",
+              "displayName": "Invoice Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        -1020
+      ],
+      "id": "43ebab29-3afe-478f-9e28-64d4fab964bc",
+      "name": "Create a record2",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "cf604312-e3aa-406c-82e7-99a9c7b7d7b2",
+              "leftValue": "={{ $json['Loan Amount'] }}",
+              "rightValue": "Disbursed",
+              "operator": {
+                "type": "number",
+                "operation": "empty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        580,
+        520
+      ],
+      "id": "464c4e66-64af-426d-b9b8-fb50b4efb8cd",
+      "name": "If3"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Invoice Amount : {{ $json['Invoice Amount'] }} || 1\nAging Factor : {{ $json['Aging Factor'] }} || 1\nCredit Factor : {{ $json['Credit Factor'] }}\nSector Factor : {{ $json['Sector Factor'] }} || 1\nDispute Factor : {{ $json['Dispute Factor'] }} || 1\n\nNote output should only in number",
+        "options": {
+          "systemMessage": "<ARFormula>\n  <Name>EligibleReceivableValue</Name>\n  <Description>Calculate eligible AR amount using risk-adjusted factors</Description>\n  <Variables>\n    <Variable name=\"InvoiceAmount\" type=\"decimal\" />\n    <Variable name=\"AgingFactor\" type=\"decimal\" />\n    <Variable name=\"CreditFactor\" type=\"decimal\" />\n    <Variable name=\"SectorFactor\" type=\"decimal\" />\n    <Variable name=\"DisputeFactor\" type=\"decimal\" />\n  </Variables>\n  <Constants>\n    <Constant name=\"BaseAdvanceRate\" value=\"0.95\" />\n  </Constants>\n  <Expression>\n    <![CDATA[\n      InvoiceAmount * BaseAdvanceRate * AgingFactor * CreditFactor * SectorFactor * DisputeFactor\n    ]]>\n  </Expression>\n  <Units>USD</Units>\n</ARFormula>\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        440
+      ],
+      "id": "0806259a-a7de-4616-bba1-66a18f508ef9",
+      "name": "AI Agent",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4.1-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        660
+      ],
+      "id": "2d290e4a-901b-47d4-ab32-53962b6e1990",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "spzj0lZP76nV4YH8",
+          "name": "OpenAi account 124"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolCalculator",
+      "typeVersion": 1,
+      "position": [
+        1340,
+        640
+      ],
+      "id": "f9b40ad6-4ca4-47c2-8a78-ec85aa5140e3",
+      "name": "Calculator"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblgy7JQmZ7xbTm7i",
+          "mode": "list",
+          "cachedResultName": "AR CRM",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblgy7JQmZ7xbTm7i"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "id": "={{ $('If3').item.json.id }}",
+            "Loan Amount": "={{ $json.output }}"
+          },
+          "matchingColumns": [
+            "id"
+          ],
+          "schema": [
+            {
+              "id": "id",
+              "displayName": "id",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Batch ID",
+              "displayName": "Batch ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Customer Name",
+              "displayName": "Customer Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Customer Email",
+              "displayName": "Customer Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Invoice Number",
+              "displayName": "Invoice Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Invoice Date",
+              "displayName": "Invoice Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Invoice Amount",
+              "displayName": "Invoice Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Due Date",
+              "displayName": "Due Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Eligibility Status",
+              "displayName": "Eligibility Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Eligible",
+                  "value": "Eligible"
+                },
+                {
+                  "name": "Not Eligible",
+                  "value": "Not Eligible"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Aging Factor",
+              "displayName": "Aging Factor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Credit Factor",
+              "displayName": "Credit Factor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1.0",
+                  "value": "1.0"
+                },
+                {
+                  "name": "0.95",
+                  "value": "0.95"
+                },
+                {
+                  "name": "0.85",
+                  "value": "0.85"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Sector Factor",
+              "displayName": "Sector Factor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "0.95",
+                  "value": "0.95"
+                },
+                {
+                  "name": "0.85",
+                  "value": "0.85"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Dispute Factor",
+              "displayName": "Dispute Factor",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "1",
+                  "value": "1"
+                },
+                {
+                  "name": "0.95",
+                  "value": "0.95"
+                },
+                {
+                  "name": "0.85",
+                  "value": "0.85"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Loan Amount",
+              "displayName": "Loan Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        1480,
+        440
+      ],
+      "id": "c194e368-9de2-4bcd-954a-f958937309cf",
+      "name": "Update record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "=channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0973EW3532",
+          "mode": "list",
+          "cachedResultName": "ar-crm-team"
+        },
+        "user": {
+          "__rl": true,
+          "mode": "list",
+          "value": ""
+        },
+        "text": "=Reminder : Invoice Number {{ $json['Invoice Number'] }} ratings not uploaded.\nKindly review and take necessary action. (Credit Rating, Sector Factor, Dispute Factor) give the rating before 24-48 hrs.\n\n",
+        "otherOptions": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.3,
+      "position": [
+        860,
+        200
+      ],
+      "id": "773fea35-b7f8-4149-b769-8693c06ec727",
+      "name": "Send a message to AR Team1",
+      "webhookId": "6064d61b-f7e9-426e-a730-c38eab8703f0",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "Sx45AYuBQdfPAmyn",
+          "name": "Slack account 74"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Account Payable AP workflow",
+        "height": 80,
+        "width": 290,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -940,
+        1080
+      ],
+      "typeVersion": 1,
+      "id": "fa31c46a-eac3-41aa-a96b-d68ad6944a88",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "content": "Account Receivable AR workflow",
+        "height": 80,
+        "width": 290,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -940,
+        -1040
+      ],
+      "typeVersion": 1,
+      "id": "50f3f41a-2cda-4421-9ddb-c022897073ac",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "content": "Days difference calculated -> Due date - Invoice date",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -520,
+        -200
+      ],
+      "typeVersion": 1,
+      "id": "762ed28a-0888-430e-a371-1af7aa91a5b7",
+      "name": "Sticky Note3"
+    },
+    {
+      "parameters": {
+        "content": "Due date - Invoice date = More than 90 Days",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        120,
+        -900
+      ],
+      "typeVersion": 1,
+      "id": "9abda250-ab5e-467b-82d8-5c567aa9d6a9",
+      "name": "Sticky Note4"
+    },
+    {
+      "parameters": {
+        "content": "Due date - Invoice date = Less than 90 Days",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        160,
+        -140
+      ],
+      "typeVersion": 1,
+      "id": "20bd7277-27f0-4baf-98b7-f6daf8d651c7",
+      "name": "Sticky Note5"
+    },
+    {
+      "parameters": {
+        "content": "Aging factors consideration\n0-30 days -> 1\n31-60 days-> 0.9\n61-90 days -> 0.8",
+        "height": 120,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        420,
+        -180
+      ],
+      "typeVersion": 1,
+      "id": "98706478-729b-48a6-92e3-ae1d078705de",
+      "name": "Sticky Note6"
+    },
+    {
+      "parameters": {
+        "content": "Data shifted from AR import tab to AR CRM Tab. These are the eligible invoices for loan facility",
+        "height": 120,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        620,
+        -520
+      ],
+      "typeVersion": 1,
+      "id": "19e747af-61c6-4438-8321-16b72ea0e76f",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "content": "AR Import tab i cleaned since eligible invoices ar moved to AR CRM",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        960,
+        -600
+      ],
+      "typeVersion": 1,
+      "id": "79eb1fa0-d65f-4218-972c-1a60ea61f6f2",
+      "name": "Sticky Note8"
+    },
+    {
+      "parameters": {
+        "content": "Credit Manager will be notified  on slack for updating\ncredit factor, sector factor and dispute factor based on customer's profile. Once these values are updated in airtable AR CRM, Loan amount would be calculated by an AI agent workflow provided below",
+        "height": 180,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1080,
+        -60
+      ],
+      "typeVersion": 1,
+      "id": "d2287b03-7ffd-448d-aa70-b432ebca365a",
+      "name": "Sticky Note9"
+    },
+    {
+      "parameters": {
+        "content": "Search the updated records from AR CRM Tab",
+        "height": 120,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        280,
+        200
+      ],
+      "typeVersion": 1,
+      "id": "8183ef42-e3e0-4df8-835e-d7ef447f398e",
+      "name": "Sticky Note10"
+    },
+    {
+      "parameters": {
+        "content": "If credit managers don't update factor/ assesses the invoices, they will receive reminder message",
+        "height": 120,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        640,
+        60
+      ],
+      "typeVersion": 1,
+      "id": "339f17d6-cb3f-45bc-81c2-36ab556561eb",
+      "name": "Sticky Note11"
+    },
+    {
+      "parameters": {
+        "content": "If the credit assessment is done by credit managers and updated in AR CRM, true output is feeded to AI agent which will calculate loan amount against all the invoices uploaded in single batch",
+        "height": 180,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        540,
+        680
+      ],
+      "typeVersion": 1,
+      "id": "3a319d28-4a42-4ca5-b7c5-a386c2ae5e68",
+      "name": "Sticky Note12"
+    },
+    {
+      "parameters": {
+        "content": "Eligible loan Amount= Sum of (Invoice Amount×Advance Rate×Aging Factor×Credit Factor×Dispute Factor×Sector and updates airtable with loan amount against every invoice. Once updated, Loan amount will be displayed on Analytics dashboard along with invoice details. Dashboard is hosted on Github. Used scripts generated on V0 and Lovable. Authenticated with Airtable tokens and Base ID updated in scripts",
+        "height": 200,
+        "width": 360
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1460,
+        640
+      ],
+      "typeVersion": 1,
+      "id": "20097f2a-a9af-4280-be8b-c48a80ae4667",
+      "name": "Sticky Note13"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 2040,
+        "width": 2920,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1000,
+        -1100
+      ],
+      "typeVersion": 1,
+      "id": "bc30132e-e0b6-4311-9531-70b5c51895ea",
+      "name": "Sticky Note14"
+    },
+    {
+      "parameters": {
+        "content": "",
+        "height": 1540,
+        "width": 2930,
+        "color": 3
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -1000,
+        1020
+      ],
+      "typeVersion": 1,
+      "id": "8b36560f-250e-4ea1-bdfd-fc0bdf7de080",
+      "name": "Sticky Note15"
+    },
+    {
+      "parameters": {
+        "content": "AR Import is cleaned and migrated to AR rejected Profiles ",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        880,
+        -920
+      ],
+      "typeVersion": 1,
+      "id": "2f7b5219-9b33-4897-b544-5d0234e8058e",
+      "name": "Sticky Note16"
+    },
+    {
+      "parameters": {
+        "content": "Search records from AR import in Airtable",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -920,
+        -200
+      ],
+      "typeVersion": 1,
+      "id": "0881ee1e-5843-4178-9984-95bac66e2b1d",
+      "name": "Sticky Note17"
+    },
+    {
+      "parameters": {
+        "content": "Search records from AP import in Airtable",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -600,
+        1280
+      ],
+      "typeVersion": 1,
+      "id": "8b93f8c0-742e-4bc1-8046-cf4a5bf1a7d6",
+      "name": "Sticky Note18"
+    },
+    {
+      "parameters": {
+        "content": "Find Out the current Date on the vendor Invoice",
+        "height": 80,
+        "width": 150
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -260,
+        1300
+      ],
+      "typeVersion": 1,
+      "id": "63973621-af92-48a6-ae77-b1c6eaa9a54b",
+      "name": "Sticky Note19"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "feb55453-2787-4147-8697-8d977e40ade0",
+              "leftValue": "={{ $('Get a record AP').item.json['Due Date'] }}",
+              "rightValue": "={{ $('CurrentDate').item.json.currentDate }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        180,
+        1320
+      ],
+      "id": "8624c241-989d-41e4-b509-56638ea17e02",
+      "name": "If2"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.fields.Vendor_Email }}",
+        "subject": "=Your Invoice Number  {{ $json.fields.Invoice_Number }} has been Rejected",
+        "emailType": "text",
+        "message": "=Dear {{ $json.fields.Vendor_Name }},  \n\nI hope this message finds you well.  We regret to inform you that your invoice dated {{ $json.fields.Invoice_Date }} with the due date of {{ $json.fields.Due_Date }} has been submitted beyond the acceptable window for processing. As per our policy, we are unable to process invoices that are submitted past their due date.  We kindly request you to review the invoice terms and ensure timely submissions in the future to avoid rejections or delays in payment.  Should you have any questions or believe this is an error, please don’t hesitate to contact us.  Thank you for your understanding and cooperation.  \n\n\nBest regards, \nShivdas,\nAvalara PM",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        620,
+        1040
+      ],
+      "id": "cc1ce71f-d586-4515-b1d2-6780b739a1a9",
+      "name": "Send a message",
+      "webhookId": "e8efd7bf-cd2d-4162-8edf-78632f0cac4d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IBAD1ixcBKg7uTsN",
+          "name": "Gmail account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "IF due Date is before or equal to current Date then that particular invoice will be rejected",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -60,
+        1260
+      ],
+      "typeVersion": 1,
+      "id": "571cf2ed-9a70-4b93-9aa0-9afd2257f762",
+      "name": "Sticky Note20"
+    },
+    {
+      "parameters": {
+        "options": {
+          "timezone": "local"
+        }
+      },
+      "type": "n8n-nodes-base.dateTime",
+      "typeVersion": 2,
+      "position": [
+        -220,
+        1440
+      ],
+      "id": "fbddb7f9-e30c-4188-8ade-1d727385b206",
+      "name": "CurrentDate"
+    },
+    {
+      "parameters": {
+        "content": "AP Import is cleaned and migrated to AP rejected Invoices ",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        740,
+        1140
+      ],
+      "typeVersion": 1,
+      "id": "a1e723a7-8978-4680-b843-7a2fdb9b4675",
+      "name": "Sticky Note21"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRecord",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tblrCKMsIqIZvMYyr",
+          "mode": "list",
+          "cachedResultName": "AP Import",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tblrCKMsIqIZvMYyr"
+        },
+        "id": "={{ $json.id }}"
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        600,
+        1200
+      ],
+      "id": "034a6813-ff26-43c0-bc9d-5ddb54561597",
+      "name": "Delete a record from AP Workspace1",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "IF due Date is After current Date then invoices has been eligible",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        160,
+        1620
+      ],
+      "typeVersion": 1,
+      "id": "13357d2c-8c2e-484c-bd5f-e3a6c50475b0",
+      "name": "Sticky Note22"
+    },
+    {
+      "parameters": {
+        "content": "Data shifted from AP import tab to AP CRM Tab. These are the eligible invoices for Early payment",
+        "height": 120,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        480,
+        1780
+      ],
+      "typeVersion": 1,
+      "id": "917e106a-04b3-405a-8afe-738ad59c9fef",
+      "name": "Sticky Note23"
+    },
+    {
+      "parameters": {
+        "content": "AP Import tab i cleaned since eligible invoices are moved to AP CRM",
+        "height": 100,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1120,
+        1280
+      ],
+      "typeVersion": 1,
+      "id": "765905e0-56d5-4e5f-9cf7-533cf6cbc82b",
+      "name": "Sticky Note24"
+    },
+    {
+      "parameters": {
+        "content": "AP team will be notified  on slack for how many invoices eligible for early payment",
+        "height": 80,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        1440,
+        1600
+      ],
+      "typeVersion": 1,
+      "id": "6e2f6827-85ca-409c-8029-231b6eecc391",
+      "name": "Sticky Note25"
+    },
+    {
+      "parameters": {
+        "content": "Those Vendor's will be notified who's eligible for early payment  ",
+        "height": 80,
+        "width": 300
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        940,
+        1980
+      ],
+      "typeVersion": 1,
+      "id": "9c00e944-0453-4778-a6e4-5b2bf1b584d3",
+      "name": "Sticky Note26"
+    },
+    {
+      "parameters": {
+        "content": "Search the updated records from AP CRM Tab",
+        "height": 120,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -740,
+        2040
+      ],
+      "typeVersion": 1,
+      "id": "04195ca5-3fcb-401d-b4ec-eebc036e71c9",
+      "name": "Sticky Note27"
+    },
+    {
+      "parameters": {
+        "content": "It will check the condition, if vendor raised the payment request and payment has been successfully disbursed or not. ",
+        "height": 140,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -440,
+        2000
+      ],
+      "typeVersion": 1,
+      "id": "0abee4d0-846c-4134-8197-00ff6e37ce3e",
+      "name": "Sticky Note28"
+    },
+    {
+      "parameters": {
+        "content": "Data shifted from AP CRM tab to AP Paid Invoices tab. These are the paid Vendor Invoices.",
+        "height": 120,
+        "width": 200
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -180,
+        2000
+      ],
+      "typeVersion": 1,
+      "id": "c8cf449b-772d-4244-8207-2620d2e74707",
+      "name": "Sticky Note29"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.fields.Vendor_Email }}",
+        "subject": "Invoice Payment Disbursed Successfully",
+        "emailType": "text",
+        "message": "=Dear {{ $json.fields.Vendor_Name }},\n\nWe are pleased to inform you that the payment for your invoice {{ $json.fields.Invoice_Number }}, dated {{ $json.fields.Payment_Date }}, amounting to {{ $json.fields.Payment_Amount }}, has been successfully disbursed tnx ID :{{ $json.fields.Transaction_ID }}.\nThe funds should reflect in your account shortly, depending on your bank's processing timelines.\n\nIf you have any questions or require further clarification, feel free to reach out.\n\nThank you for your continued partnership.\n\nBest regards,\nShivdas,\nAP Team",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        180,
+        2100
+      ],
+      "id": "eaf68cb5-abd3-479e-ba2a-bf98a7190d35",
+      "name": "Acknowledged to Vendor",
+      "webhookId": "6d4f7cc0-af13-4dfe-ad0f-6bddfe46ea30",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "IBAD1ixcBKg7uTsN",
+          "name": "Gmail account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "deleteRecord",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbloNYgHevCbijGB7",
+          "mode": "list",
+          "cachedResultName": "AP CRM",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tbloNYgHevCbijGB7"
+        },
+        "id": "={{ $('Create AP CRM for Eligible Invoices1').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        160,
+        2320
+      ],
+      "id": "ce72da30-f491-424a-acc7-2e0258eac949",
+      "name": "Delete a From AP CRM",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "AP CRM is cleaned and migrated to AP Paid Invoices",
+        "height": 80,
+        "width": 160
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        400,
+        2340
+      ],
+      "typeVersion": 1,
+      "id": "a932eee3-5487-4f54-9653-7e24ddb529fa",
+      "name": "Sticky Note32"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appkUal6c4oanOR4X",
+          "mode": "list",
+          "cachedResultName": "Edvertise ERP",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbltQ4FqRe3v4c9pV",
+          "mode": "list",
+          "cachedResultName": "AP Rejected Invoices",
+          "cachedResultUrl": "https://airtable.com/appkUal6c4oanOR4X/tbltQ4FqRe3v4c9pV"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Invoice_Number": "={{ $('Get a record AP').item.json['Invoice Number'] }}",
+            "Invoice_Amount": "={{ $('Get a record AP').item.json['Invoice Amount'] }}",
+            "Batch_ID": "={{ $('Get a record AP').item.json['Batch ID'] }}",
+            "Vendor_ID": "={{ $('Get a record AP').item.json['Vendor ID'] }}",
+            "Vendor_Name": "={{ $('Get a record AP').item.json['Vendor Name'] }}",
+            "Vendor_Email": "={{ $('Get a record AP').item.json['Vendor Email'] }}",
+            "Invoice_Date": "={{ $('Get a record AP').item.json['Invoice Date'] }}",
+            "Due_Date": "={{ $('Get a record AP').item.json['Due Date'] }}",
+            "Invoice _Status": "Rejected"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Batch_ID",
+              "displayName": "Batch_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_ID",
+              "displayName": "Vendor_ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_Name",
+              "displayName": "Vendor_Name",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Vendor_Email",
+              "displayName": "Vendor_Email",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Number",
+              "displayName": "Invoice_Number",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Date",
+              "displayName": "Invoice_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice_Amount",
+              "displayName": "Invoice_Amount",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "number",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Due_Date",
+              "displayName": "Due_Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Invoice _Status",
+              "displayName": "Invoice _Status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Rejected",
+                  "value": "Rejected"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        320,
+        1200
+      ],
+      "id": "6e775823-d3d2-49c4-bd89-bcdde6fdfba7",
+      "name": "Create a record",
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "ce5wvYG6u8thxXX3",
+          "name": "Airtable Personal Access Token account 3"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Search AR Workspace",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search Updated Records",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Search AP Workspace",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Create AP CRM for Eligible Invoices1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Date & Time": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Search not eligible invoices",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Calculate Aging Factor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create AR CRM for Eligible Invoices": {
+      "main": [
+        [
+          {
+            "node": "Delete a record from AR",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Calculate How Much Invoices Eligible",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Aging Factor": {
+      "main": [
+        [
+          {
+            "node": "Create AR CRM for Eligible Invoices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search AR Workspace": {
+      "main": [
+        [
+          {
+            "node": "Get a record AR",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search not eligible invoices": {
+      "main": [
+        [
+          {
+            "node": "Create a record2",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Delete a record from AR Workspace",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search AP Workspace": {
+      "main": [
+        [
+          {
+            "node": "Get a record AP",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a record AP": {
+      "main": [
+        [
+          {
+            "node": "CurrentDate",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a record AR": {
+      "main": [
+        [
+          {
+            "node": "Date & Time",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create AP CRM for Eligible Invoices": {
+      "main": [
+        [
+          {
+            "node": "Check How Much Invoices Eligible",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Delete a record from AP",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Eligible email to Customer1",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check How Much Invoices Eligible": {
+      "main": [
+        [
+          {
+            "node": "Send a message to AP Team1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate How Much Invoices Eligible": {
+      "main": [
+        [
+          {
+            "node": "Send a message to AR Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Search Updated Records": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "If3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message to AR Team1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Create AP CRM for Eligible Invoices1": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record1": {
+      "main": [
+        [
+          {
+            "node": "Delete a From AP CRM",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Acknowledged to Vendor",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Create a record1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If3": {
+      "main": [
+        []
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculator": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Update record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If2": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "CurrentDate": {
+      "main": [
+        [
+          {
+            "node": "Create AP CRM for Eligible Invoices",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Delete a record from AP Workspace1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "26bfbc96-81ca-4af6-9660-40e7a8028b32",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "62af07c983db00fd79effafb8402ba2a7e81874648a800ca918f9a4a2a063bdb"
+  },
+  "id": "6PvjHruQ1dCatn87",
+  "tags": []
+}
